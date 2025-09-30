@@ -24,17 +24,23 @@ The "normal" segments that processes define are text, read only data,
 - `stack` - stack frames
 
 
-**Tangent on 0 Init .bss**
-```C++
-int var; // global
-int main() {
-    // static
-    static y;
-    
-    // both print 0
-    cout << "x = " << x << endl;
-    cout << "y = " << y << endl;
-    
-    return 0;
-}
-```
+Now the linker scripting language is a little peculiar at first, but some reading it at face value:
+- Declares that the entry point of the executable is boot()
+- Defines various "sections"... our literal memory segments
+    - There's five of them... four explicity stated and the fifth (stack) is is allocated implicity via a giant jump in the address space before defininng the stack pointer 
+    - there's some *implementation identifiers* -- variables that start with `__` that are defined. These are kernel level variables that define the beginning of the `.bss` segment. The linker will reserve the space for these values... but won't actually popualte them (duh they are undefined... but wait! I thought we said they go 0-init?, well use they do, but thats at runtime!)
+        - **TODO**... some online tutorials show `.data` being defined, i probably should do this. 
+        - `.rodata` doesn't need this since the binary will contain the values directly
+        - same for `.text`... the compiler obviously knows what the instructions are.
+
+
+### 
+
+
+
+
+
+
+# Other Resource for myself to refer to
+- https://sourceware.org/binutils/docs/ld/index.html#SEC_Contents
+
