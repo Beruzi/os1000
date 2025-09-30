@@ -1,10 +1,8 @@
 ### Mini OS
 
 Some notes for myself....
-
-
-
-Once executing, use ctrl + a to escape into QEMU debugging (QEMU monitor). I think this is only possible because we configure QEMU to route its standard input and output to the machine's serial port? 
+- Once executing, use ctrl + a to escape into QEMU debugging (QEMU monitor). I think this is only possible because we configure QEMU to route its standard input and output to the machine's serial port? 
+- After producing a `.elf` file, you can `$llvm-objdump` to see the assembly created. This is the `.text` segment, ie the actual instructions (duh)
 
 
 
@@ -29,12 +27,19 @@ Now the linker scripting language is a little peculiar at first, but some readin
 - Defines various "sections"... our literal memory segments
     - There's five of them... four explicity stated and the fifth (stack) is is allocated implicity via a giant jump in the address space before defininng the stack pointer 
     - there's some *implementation identifiers* -- variables that start with `__` that are defined. These are kernel level variables that define the beginning of the `.bss` segment. The linker will reserve the space for these values... but won't actually popualte them (duh they are undefined... but wait! I thought we said they go 0-init?, well use they do, but thats at runtime!)
-        - **TODO**... some online tutorials show `.data` being defined, i probably should do this. 
+        - **TODO**... some online tutorials show `.data` defining start and end variables.... i probably should do this. 
         - `.rodata` doesn't need this since the binary will contain the values directly
         - same for `.text`... the compiler obviously knows what the instructions are.
 
 
-### 
+### .elf file?
+An `.elf` file or **Executable and Linkable Format** File is a a standard format for executable files. Basically, when you go off and compile some 20 line `main.cpp` file, the produced `a.out` is a `.elf` file. 
+ 
+> running `$ file a.out` will reveal that it is indeed a ELF file
+
+In the broader scope of things, during the compilation process after creating object files (`.o`), the linker will link all of them as an ELF. Now technically `.o` files are already in ELF, they just aren't executable. Its at this point that the linker will do a bunch of magic... or rather in our case, the linker script will decide memory layout, entry point, etc.
+
+
 
 
 
